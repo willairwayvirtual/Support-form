@@ -1,41 +1,44 @@
-# Support-form
-Imports System.Data.OleDb
-Public Class WASupport
-    Dim provider As String
-    Dim dataFile As String
-    Dim connString As String
-    Dim conn As OleDbConnection = New OleDbConnection
+Imports System.Net.Mail
+Public Class ITHELPDESK
+    Private Sub Send_ticket_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Send_Ticket.Click
+        Dim mail As New MailMessage
+        mail.Subject = MailSubject.Text
+        ' mail.To.Add("Wavuserhelpdesk@hotmail.com")
+        mail.To.Add("Wavuserhelpdesk@hotmail.com")
+        mail.From = New MailAddress("Wavuserhelpdesk@hotmail.com")
+        mail.Body = "From: " & (Umail.Text) & " Query Text: " & Qry.Text
 
-    Private Sub Send_ticket_click(sender As Object, e As EventArgs) Handles Send_Ticket.Click
-        provider = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source ="
-        'Change the following to your access database location
-        dataFile = "C:\VisStudioProj\wav login Desktop App23\wav login Desktop App23\BIN\DEBUG\logindb.accdb"
-        connString = provider & dataFile
-        conn.ConnectionString = connString
+        Dim smtp As New SmtpClient("smtp-mail.outlook.com")
+        'Dim smtp As New SmtpClient("smtp.live.com")
+        smtp.EnableSsl = True
+        smtp.Credentials = New System.Net.NetworkCredential("Wavuserhelpdesk@hotmail.com", "!Spongebob18")
+        smtp.Port = "587"
+        'smtp.Port = "25"
+        smtp.Send(mail)
+        MsgBox("Thank you for your enquiry.  We will review and aim to respond within 24 hours.
+ 
+     Thanks
+ 
+    WAV Development and Support Team
+      ")
+    End Sub
 
-        'check status of connection string
-        If conn.State = ConnectionState.Closed Then
-            conn.Open()
-        Else
-            conn.Close()
-        End If
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
-        'add new records
-        Dim savenew As String = "INSERT INTO [Support_form]  (Uname,Subject,Qry) values('" &
-        Uname.Text & "','" &
-        Subject.Text & "','" &
-        Qry.Text & "');"
+    End Sub
 
-        Dim cmd As New OleDbCommand
+    Private Sub Uname_TextChanged(sender As Object, e As EventArgs) Handles Umail.TextChanged
 
-        With cmd
-            .CommandText = savenew
-            .Connection = conn
-            .ExecuteNonQuery()
-        End With
-        MessageBox.Show("Query Filed")
+    End Sub
 
-        conn.Close()
+    Private Sub Subject_TextChanged(sender As Object, e As EventArgs) Handles MailSubject.TextChanged
+
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Form1.Show()
+        Me.Close()
+
 
     End Sub
 End Class
